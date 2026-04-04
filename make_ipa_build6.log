@@ -1,0 +1,51 @@
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  Inherited 'common' options: --features=swift.index_while_building --features=swift.use_global_index_store --features=swift.use_global_module_cache --features=oso_prefix_is_pwd
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  'build' options: --action_env=ZERO_AR_DATE=1 --apple_platform_type=ios --enable_platform_specific_config --apple_crosstool_top=@local_config_apple_cc//:toolchain --crosstool_top=@local_config_apple_cc//:toolchain --host_crosstool_top=@local_config_apple_cc//:toolchain --per_file_copt=.*.m$,@-fno-objc-msgsend-selector-stubs --per_file_copt=.*.mm$,@-fno-objc-msgsend-selector-stubs --features=debug_prefix_map_pwd_is_dot --features=swift.cacheable_swiftmodules --features=swift.debug_prefix_map --features=swift.enable_vfsoverlays --strategy=Genrule=standalone --spawn_strategy=standalone --strategy=SwiftCompile=worker --//Telegram:disableExtensions
+Computing main repo mapping: 
+Loading: 
+Loading: 1 packages loaded
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //Telegram:Telegram (3 packages loaded, 4071 targets configured).
+ERROR: /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/submodules/LegacyComponents/BUILD:17:13: Compiling submodules/LegacyComponents/Sources/TGVideoCameraGLRenderer.m failed: (Exit 1): wrapped_clang failed: error executing ObjcCompile command (from target //submodules/LegacyComponents:LegacyComponents) 
+  (cd /private/var/tmp/_bazel_afanasyev/9a39311ceb7a61706aa1e4e247e12702/execroot/_main && \
+  exec env - \
+    APPLE_SDK_PLATFORM=iPhoneOS \
+    APPLE_SDK_VERSION_OVERRIDE=26.4 \
+    PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+    XCODE_VERSION_OVERRIDE=26.4.0.17E5179g \
+    ZERO_AR_DATE=1 \
+  bazel-out/darwin_arm64-opt-exec-ST-d57f47055a04/bin/external/apple_support+/crosstool/wrapped_clang '-D_FORTIFY_SOURCE=1' -fstack-protector -fcolor-diagnostics -Wall -Wthread-safety -Wself-assign -fno-omit-frame-pointer -g '-fdebug-prefix-map=__BAZEL_EXECUTION_ROOT__=.' '-fdebug-prefix-map=__BAZEL_XCODE_DEVELOPER_DIR__=/PLACEHOLDER_DEVELOPER_DIR' '-Werror=incompatible-sysroot' -Wshorten-64-to-32 -Wbool-conversion -Wconstant-conversion -Wduplicate-method-match -Wempty-body -Wenum-conversion -Wint-conversion -Wunreachable-code -Wmismatched-return-types -Wundeclared-selector -Wuninitialized -Wunused-function -Wunused-variable -iquote . -iquote bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin -Isubmodules/LegacyComponents/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/PublicHeaders -Isubmodules/SSignalKit/SSignalKit/Source -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/SSignalKit/SSignalKit/Source -Isubmodules/AppBundle/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/AppBundle/PublicHeaders -MD -MF bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGVideoCameraGLRenderer.d -DOS_IOS -fno-autolink -isysroot __BAZEL_XCODE_SDKROOT__ -F__BAZEL_XCODE_SDKROOT__/System/Library/Frameworks -F__BAZEL_XCODE_DEVELOPER_DIR__/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -fobjc-arc -no-canonical-prefixes -target arm64-apple-ios13.0 -Werror -fmodules '-fmodules-cache-path=bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/_objc_module_cache' -O0 '-DDEBUG=1' -fstack-protector -fstack-protector-all -g -fno-objc-msgsend-selector-stubs -Wno-builtin-macro-redefined '-D__DATE__="redacted"' '-D__TIMESTAMP__="redacted"' '-D__TIME__="redacted"' -c submodules/LegacyComponents/Sources/TGVideoCameraGLRenderer.m -o bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGVideoCameraGLRenderer.o)
+# Configuration: 39c5484e21c617c485e617fe1cfe71baa245c32b42d934763603a4f6cda4ca8e
+# Execution platform: @@platforms//host:host
+submodules/LegacyComponents/Sources/TGVideoCameraGLRenderer.m:418:2: error: misleading indentation; statement is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
+  418 |         return dstPixelBuffer;
+      |         ^
+submodules/LegacyComponents/Sources/TGVideoCameraGLRenderer.m:415:5: note: previous statement is here
+  415 |     if (dstTexture)
+      |     ^
+1 error generated.
+Error in child process '/usr/bin/xcrun'. 1
+Target //Telegram:Telegram failed to build
+INFO: Elapsed time: 1.189s, Critical Path: 0.41s
+INFO: 12 processes: 998 action cache hit, 11 internal, 1 local.
+ERROR: Build did NOT complete successfully
+Overriding the required Xcode version 26.2 with 26.4 as reported by 'xcode-select -p'
+TelegramBuild: running
+/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64 build Telegram/Telegram --announce_rc --features=swift.use_global_module_cache --verbose_failures --remote_cache_async --define=buildNumber=1 -c dbg --ios_multi_cpus=arm64 --watchos_cpus=arm64_32 --@build_bazel_rules_swift//swift:copt=\"-j\" --@build_bazel_rules_swift//swift:copt=\"8\"
+Traceback (most recent call last):
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 1240, in <module>
+    build(bazel=bazel_path, arguments=args)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 621, in build
+    bazel_command_line.invoke_build()
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 300, in invoke_build
+    call_executable(combined_arguments)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/BuildEnvironment.py", line 104, in call_executable
+    subprocess.check_call(resolved_arguments, env=resolved_env)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 373, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64', 'build', 'Telegram/Telegram', '--announce_rc', '--features=swift.use_global_module_cache', '--verbose_failures', '--remote_cache_async', '--define=buildNumber=1', '-c', 'dbg', '--ios_multi_cpus=arm64', '--watchos_cpus=arm64_32', '--@build_bazel_rules_swift//swift:copt="-j"', '--@build_bazel_rules_swift//swift:copt="8"']' returned non-zero exit status 1.

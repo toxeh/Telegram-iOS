@@ -398,7 +398,7 @@
 	glBindTexture(CVOpenGLESTextureGetTarget(srcTexture), 0);
     if (hasPreviousTexture)
         glBindTexture(CVOpenGLESTextureGetTarget(prevTexture), 0);
-	glBindTexture(CVOpenGLESTextureGetTarget(dstTexture), 0);
+    glBindTexture(CVOpenGLESTextureGetTarget(dstTexture), 0);
 	
 	glFlush();
 	
@@ -411,11 +411,11 @@ bail:
     
     if (prevTexture)
         CFRelease(prevTexture);
-	
-	if (dstTexture)
-		CFRelease(dstTexture);
-	
-	return dstPixelBuffer;
+
+    if (dstTexture)
+        CFRelease(dstTexture);
+
+    return dstPixelBuffer;
 }
 
 - (CMFormatDescriptionRef)outputFormatDescription

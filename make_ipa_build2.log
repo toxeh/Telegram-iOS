@@ -1,0 +1,122 @@
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  Inherited 'common' options: --features=swift.index_while_building --features=swift.use_global_index_store --features=swift.use_global_module_cache --features=oso_prefix_is_pwd
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  'build' options: --action_env=ZERO_AR_DATE=1 --apple_platform_type=ios --enable_platform_specific_config --apple_crosstool_top=@local_config_apple_cc//:toolchain --crosstool_top=@local_config_apple_cc//:toolchain --host_crosstool_top=@local_config_apple_cc//:toolchain --per_file_copt=.*.m$,@-fno-objc-msgsend-selector-stubs --per_file_copt=.*.mm$,@-fno-objc-msgsend-selector-stubs --features=debug_prefix_map_pwd_is_dot --features=swift.cacheable_swiftmodules --features=swift.debug_prefix_map --features=swift.enable_vfsoverlays --strategy=Genrule=standalone --spawn_strategy=standalone --strategy=SwiftCompile=worker --//Telegram:disableExtensions
+Computing main repo mapping: 
+Loading: 
+Loading: 1 packages loaded
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //Telegram:Telegram (3 packages loaded, 4071 targets configured).
+[1,216 / 4,152] Compiling submodules/AsyncDisplayKit/Source/ASDisplayNode+UIViewBridge.mm; 0s local ... (5 actions, 4 running)
+[1,691 / 4,621] Compiling submodules/AsyncDisplayKit/Source/ASDisplayNode+UIViewBridge.mm; 1s local ... (10 actions, 9 running)
+[1,704 / 4,621] Compiling submodules/AsyncDisplayKit/Source/ASDisplayNode+UIViewBridge.mm; 2s local ... (10 actions, 9 running)
+[1,707 / 4,621] Compiling Swift module //submodules/Display:Display; 3s worker ... (10 actions, 9 running)
+[1,712 / 4,621] Compiling Swift module //submodules/Display:Display; 4s worker ... (10 actions, 9 running)
+[1,716 / 4,621] Compiling Swift module //submodules/Display:Display; 5s worker ... (10 actions running)
+[1,723 / 4,621] Compiling Swift module //submodules/Display:Display; 7s worker ... (10 actions, 9 running)
+[1,729 / 4,621] Compiling Swift module //submodules/Display:Display; 8s worker ... (10 actions, 9 running)
+[1,737 / 4,621] Compiling Swift module //submodules/Display:Display; 9s worker ... (10 actions, 9 running)
+[1,743 / 4,621] Compiling Swift module //submodules/Display:Display; 10s worker ... (10 actions running)
+[1,745 / 4,621] Compiling Swift module //submodules/Display:Display; 11s worker ... (10 actions running)
+[1,752 / 4,621] Compiling Swift module //submodules/Display:Display; 12s worker ... (10 actions running)
+[1,772 / 4,621] Compiling Swift module //submodules/Display:Display; 13s worker ... (10 actions running)
+[1,778 / 4,621] Compiling Swift module //submodules/Display:Display; 14s worker ... (10 actions running)
+[1,790 / 4,621] Compiling Swift module //submodules/TelegramApi:TelegramApi; 15s worker ... (10 actions running)
+[1,797 / 4,621] Compiling Swift module //submodules/TelegramApi:TelegramApi; 16s worker ... (10 actions running)
+[1,802 / 4,621] Compiling Swift module //submodules/TelegramApi:TelegramApi; 17s worker ... (10 actions running)
+[1,809 / 4,621] Compiling Swift module //submodules/TelegramApi:TelegramApi; 18s worker ... (10 actions running)
+[2,184 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 19s worker ... (10 actions running)
+[2,189 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 20s worker ... (10 actions running)
+[2,196 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 21s worker ... (10 actions running)
+[2,204 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 22s worker ... (10 actions running)
+[2,220 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 23s worker ... (10 actions running)
+[2,224 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 24s worker ... (10 actions running)
+[2,231 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 25s worker ... (10 actions running)
+[2,240 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 26s worker ... (10 actions running)
+[2,251 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 27s worker ... (10 actions running)
+[2,257 / 4,983] Compiling Swift module //submodules/TelegramApi:TelegramApi; 28s worker ... (10 actions running)
+[2,311 / 5,073] Compiling Swift module //submodules/TelegramApi:TelegramApi; 29s worker ... (10 actions running)
+[2,324 / 5,093] Compiling Swift module //submodules/TelegramApi:TelegramApi; 30s worker ... (10 actions running)
+[2,328 / 5,093] Compiling Swift module //submodules/TelegramApi:TelegramApi; 31s worker ... (10 actions running)
+[2,337 / 5,093] Compiling Swift module //submodules/TelegramApi:TelegramApi; 32s worker ... (10 actions running)
+[2,354 / 5,107] Compiling Swift module //submodules/TelegramApi:TelegramApi; 33s worker ... (10 actions running)
+[2,365 / 5,522] Compiling Swift module //submodules/TelegramApi:TelegramApi; 34s worker ... (10 actions running)
+[2,378 / 5,522] Compiling Swift module //submodules/TelegramApi:TelegramApi; 35s worker ... (10 actions running)
+[2,389 / 5,523] Compiling Swift module //submodules/TelegramApi:TelegramApi; 36s worker ... (10 actions running)
+INFO: From Compiling submodules/MozjpegBinding/Sources/MozjpegBinding.mm:
+submodules/MozjpegBinding/Sources/MozjpegBinding.mm:25:21: warning: unused function 'JXLGetDistance' [-Wunused-function]
+   25 | static inline float JXLGetDistance(int32_t quality) {
+      |                     ^~~~~~~~~~~~~~
+1 warning generated.
+[2,400 / 5,524] Compiling Swift module //submodules/TelegramApi:TelegramApi; 37s worker ... (10 actions running)
+INFO: From Compiling submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:
+submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:319:25: warning: variable 'byteno' set but not used [-Wunused-but-set-variable]
+  319 |     static unsigned int byteno = 0;
+      |                         ^
+submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:53:15: warning: unused variable 'DcChrominanceCodesPerBitsize' [-Wunused-const-variable]
+   53 | const uint8_t DcChrominanceCodesPerBitsize[16] = { 0,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0 };   // sum = 12
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:54:15: warning: unused variable 'DcChrominanceValues' [-Wunused-const-variable]
+   54 | const uint8_t DcChrominanceValues         [12] = { 0,1,2,3,4,5,6,7,8,9,10,11 };         // => 12 codes (identical to DcLuminanceValues)
+      |               ^~~~~~~~~~~~~~~~~~~
+submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:55:15: warning: unused variable 'AcChrominanceCodesPerBitsize' [-Wunused-const-variable]
+   55 | const uint8_t AcChrominanceCodesPerBitsize[16] = { 0,2,1,2,4,4,3,4,7,5,4,4,0,1,2,119 }; // sum = 162
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/AnimationCompression/DctHuffman/Sources/DctHuffman.mm:56:15: warning: unused variable 'AcChrominanceValues' [-Wunused-const-variable]
+   56 | const uint8_t AcChrominanceValues        [162] =                                        // => 162 codes
+      |               ^~~~~~~~~~~~~~~~~~~
+5 warnings generated.
+[2,415 / 5,528] Compiling Swift module //submodules/TelegramApi:TelegramApi; 38s worker ... (9 actions running)
+INFO: From Compiling submodules/WebPBinding/Sources/UIImage+WebP.m:
+submodules/WebPBinding/Sources/UIImage+WebP.m:27:63: warning: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Wenum-enum-conversion]
+   27 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/WebPBinding/Sources/UIImage+WebP.m:87:148: warning: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'enum CGBitmapInfo') [-Wenum-enum-conversion]
+   87 |     CGContextRef context = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+      |                                                                                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.
+[2,436 / 5,555] Compiling Swift module //submodules/TelegramApi:TelegramApi; 39s worker ... (10 actions running)
+[2,455 / 5,555] Compiling Swift module //submodules/TelegramApi:TelegramApi; 40s worker ... (10 actions running)
+[2,471 / 5,588] Compiling Swift module //submodules/TelegramApi:TelegramApi; 41s worker ... (10 actions running)
+ERROR: /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/submodules/LegacyComponents/BUILD:17:13: Compiling submodules/LegacyComponents/Sources/TGVideoCameraPipeline.m failed: (Exit 1): wrapped_clang failed: error executing ObjcCompile command (from target //submodules/LegacyComponents:LegacyComponents) 
+  (cd /private/var/tmp/_bazel_afanasyev/9a39311ceb7a61706aa1e4e247e12702/execroot/_main && \
+  exec env - \
+    APPLE_SDK_PLATFORM=iPhoneOS \
+    APPLE_SDK_VERSION_OVERRIDE=26.4 \
+    PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+    XCODE_VERSION_OVERRIDE=26.4.0.17E5179g \
+    ZERO_AR_DATE=1 \
+  bazel-out/darwin_arm64-opt-exec-ST-d57f47055a04/bin/external/apple_support+/crosstool/wrapped_clang '-D_FORTIFY_SOURCE=1' -fstack-protector -fcolor-diagnostics -Wall -Wthread-safety -Wself-assign -fno-omit-frame-pointer -g '-fdebug-prefix-map=__BAZEL_EXECUTION_ROOT__=.' '-fdebug-prefix-map=__BAZEL_XCODE_DEVELOPER_DIR__=/PLACEHOLDER_DEVELOPER_DIR' '-Werror=incompatible-sysroot' -Wshorten-64-to-32 -Wbool-conversion -Wconstant-conversion -Wduplicate-method-match -Wempty-body -Wenum-conversion -Wint-conversion -Wunreachable-code -Wmismatched-return-types -Wundeclared-selector -Wuninitialized -Wunused-function -Wunused-variable -iquote . -iquote bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin -Isubmodules/LegacyComponents/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/PublicHeaders -Isubmodules/SSignalKit/SSignalKit/Source -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/SSignalKit/SSignalKit/Source -Isubmodules/AppBundle/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/AppBundle/PublicHeaders -MD -MF bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGVideoCameraPipeline.d -DOS_IOS -fno-autolink -isysroot __BAZEL_XCODE_SDKROOT__ -F__BAZEL_XCODE_SDKROOT__/System/Library/Frameworks -F__BAZEL_XCODE_DEVELOPER_DIR__/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -fobjc-arc -no-canonical-prefixes -target arm64-apple-ios13.0 -Werror -fmodules '-fmodules-cache-path=bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/_objc_module_cache' -O0 '-DDEBUG=1' -fstack-protector -fstack-protector-all -g -fno-objc-msgsend-selector-stubs -Wno-builtin-macro-redefined '-D__DATE__="redacted"' '-D__TIMESTAMP__="redacted"' '-D__TIME__="redacted"' -c submodules/LegacyComponents/Sources/TGVideoCameraPipeline.m -o bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGVideoCameraPipeline.o)
+# Configuration: 39c5484e21c617c485e617fe1cfe71baa245c32b42d934763603a4f6cda4ca8e
+# Execution platform: @@platforms//host:host
+submodules/LegacyComponents/Sources/TGVideoCameraPipeline.m:456:133: error: bitwise operation between different enumeration types ('enum CGBitmapInfo' and 'enum CGImageAlphaInfo') [-Werror,-Wenum-enum-conversion]
+  456 |     CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+      |                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGVideoCameraPipeline.m:636:140: error: bitwise operation between different enumeration types ('enum CGImageByteOrderInfo' and 'enum CGImageAlphaInfo') [-Werror,-Wenum-enum-conversion]
+  636 |     CGContextRef context = CGBitmapContextCreateWithData(NULL, outWidth, outHeight, 8, outWidth * 4, colorSpace, kCGImageByteOrder32Little | kCGImageAlphaPremultipliedFirst, NULL, nil);
+      |                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.
+Error in child process '/usr/bin/xcrun'. 1
+Target //Telegram:Telegram failed to build
+INFO: Elapsed time: 43.413s, Critical Path: 41.91s
+INFO: 364 processes: 910 action cache hit, 14 internal, 317 local, 33 worker.
+ERROR: Build did NOT complete successfully
+Overriding the required Xcode version 26.2 with 26.4 as reported by 'xcode-select -p'
+TelegramBuild: running
+/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64 build Telegram/Telegram --announce_rc --features=swift.use_global_module_cache --verbose_failures --remote_cache_async --define=buildNumber=1 -c dbg --ios_multi_cpus=arm64 --watchos_cpus=arm64_32 --@build_bazel_rules_swift//swift:copt=\"-j\" --@build_bazel_rules_swift//swift:copt=\"8\"
+Traceback (most recent call last):
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 1240, in <module>
+    build(bazel=bazel_path, arguments=args)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 621, in build
+    bazel_command_line.invoke_build()
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 300, in invoke_build
+    call_executable(combined_arguments)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/BuildEnvironment.py", line 104, in call_executable
+    subprocess.check_call(resolved_arguments, env=resolved_env)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 373, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64', 'build', 'Telegram/Telegram', '--announce_rc', '--features=swift.use_global_module_cache', '--verbose_failures', '--remote_cache_async', '--define=buildNumber=1', '-c', 'dbg', '--ios_multi_cpus=arm64', '--watchos_cpus=arm64_32', '--@build_bazel_rules_swift//swift:copt="-j"', '--@build_bazel_rules_swift//swift:copt="8"']' returned non-zero exit status 1.

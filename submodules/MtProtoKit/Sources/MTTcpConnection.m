@@ -466,18 +466,36 @@ static NSMutableData *executeGenerationCode(id<EncryptionProvider> provider, NSD
     }
 
     NSUInteger baseLength = resultData.length;
-    if (baseLength < 513) {
+    uint32_t randomExtraPadding = arc4random_uniform(200);
+    NSUInteger targetLength = MAX((NSUInteger)513, baseLength) + randomExtraPadding;
+    
+    if (baseLength < targetLength) {
         uint8_t paddingType[2] = { 0x00, 0x15 };
         [resultData appendBytes:paddingType length:2];
 
-        uint16_t paddingLength = (uint16_t)(513 - baseLength);
+        uint16_t paddingLength = (uint16_t)(targetLength - baseLength);
         uint8_t paddingLengthBytes[2] = { (uint8_t)((paddingLength >> 8) & 0xff), (uint8_t)(paddingLength & 0xff) };
         [resultData appendBytes:paddingLengthBytes length:2];
 
         if (paddingLength > 0) {
             NSMutableData *zeros = [[NSMutableData alloc] initWithLength:paddingLength];
+            if (!MTFillRandomBytes((uint8_t *)zeros.mutableBytes, zeros.length)) {
+                // If random bytes generation fails, ignore. Keep 0s.
+            }
             [resultData appendData:zeros];
         }
+    }
+
+    if (resultData.length >= 11) {
+        uint16_t recordLength = (uint16_t)(resultData.length - 5);
+        uint16_t handshakeLength = (uint16_t)(resultData.length - 9);
+        
+        uint8_t *bytes = (uint8_t *)resultData.mutableBytes;
+        bytes[3] = (uint8_t)((recordLength >> 8) & 0xff);
+        bytes[4] = (uint8_t)(recordLength & 0xff);
+        
+        bytes[7] = (uint8_t)((handshakeLength >> 8) & 0xff);
+        bytes[8] = (uint8_t)(handshakeLength & 0xff);
     }
 
     return resultData;
@@ -588,7 +606,8 @@ typedef enum {
     MTTcpSocksReceiveHelloResponse2,
     MTTcpSocksReceivePassthrough,
     MTTcpSocksReceiveComplexLength,
-    MTTcpSocksReceiveComplexPacketPart
+    MTTcpSocksReceiveComplexPacketPart,
+    MTTcpSocksReceiveComplexDummyPayload
 } MTTcpReadTags;
 
 static const NSTimeInterval MTMinTcpResponseTimeout = 12.0;
@@ -1258,6 +1277,21 @@ struct ctr_state {
                         while (offset < completeData.length) {
                             NSUInteger partLength = MIN(limit, completeData.length - offset);
                             
+                            // Inject Dummy Payload randomly (20% chance)
+                            if (arc4random_uniform(100) < 20) {
+                                uint32_t dummyLength = 10 + arc4random_uniform(290); // 10 to 300 bytes
+                                uint8_t dummyHeader[5] = { 0x18, 0x03, 0x03, 0x00, 0x00 };
+                                int16_t dummyLengthValue = (int16_t)dummyLength;
+                                dummyLengthValue = OSSwapInt16(dummyLengthValue);
+                                memcpy(&dummyHeader[3], &dummyLengthValue, 2);
+                                
+                                NSMutableData *dummyData = [[NSMutableData alloc] initWithLength:dummyLength];
+                                MTFillRandomBytes(dummyData.mutableBytes, dummyData.length);
+                                
+                                [partitionedCompleteData appendData:[[NSData alloc] initWithBytes:dummyHeader length:5]];
+                                [partitionedCompleteData appendData:dummyData];
+                            }
+
                             uint8_t packetHeader[5] = { 0x17, 0x03, 0x03, 0x00, 0x00 };
                             int16_t lengthValue = (int16_t)partLength;
                             lengthValue = OSSwapInt16(lengthValue);
@@ -1672,8 +1706,12 @@ struct ctr_state {
         
         NSData *header = [rawData subdataWithRange:NSMakeRange(0, 3)];
         uint8_t expectedHeader[3] = { 0x17, 0x03, 0x03 };
+        uint8_t expectedDummyHeader[3] = { 0x18, 0x03, 0x03 };
         
-        if (![[[NSData alloc] initWithBytes:expectedHeader length:3] isEqualToData:header]) {
+        bool isDummy = false;
+        if ([[[NSData alloc] initWithBytes:expectedDummyHeader length:3] isEqualToData:header]) {
+            isDummy = true;
+        } else if (![[[NSData alloc] initWithBytes:expectedHeader length:3] isEqualToData:header]) {
             if (MTLogEnabled()) {
                 MTLog(@"***** %s: invalid complex header", __PRETTY_FUNCTION__);
             }
@@ -1692,7 +1730,15 @@ struct ctr_state {
             return;
         }
         
-        [_socket readDataToLength:(int)nextLength withTimeout:-1 tag:MTTcpSocksReceiveComplexPacketPart];
+        if (isDummy) {
+            [_socket readDataToLength:(int)nextLength withTimeout:-1 tag:MTTcpSocksReceiveComplexDummyPayload];
+        } else {
+            [_socket readDataToLength:(int)nextLength withTimeout:-1 tag:MTTcpSocksReceiveComplexPacketPart];
+        }
+        return;
+    } else if (tag == MTTcpSocksReceiveComplexDummyPayload) {
+        // Silently discard dummy payload and wait for next header
+        [_socket readDataToLength:5 withTimeout:-1 tag:MTTcpSocksReceiveComplexLength];
         return;
     } else if (tag == MTTcpSocksReceiveComplexPacketPart) {
         [self addReadData:rawData networkType:networkType];

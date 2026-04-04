@@ -163,7 +163,7 @@ namespace AS {
       return success;
     }
     
-    void lock() {
+    void lock() __attribute__((no_thread_safety_analysis)) {
       switch (_type) {
         case Plain:
           _plain.lock();
@@ -185,7 +185,7 @@ namespace AS {
       DidLock();
     }
 
-    void unlock() {
+    void unlock() __attribute__((no_thread_safety_analysis)) {
       WillUnlock();
       switch (_type) {
         case Plain:
