@@ -1,0 +1,139 @@
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  Inherited 'common' options: --features=swift.index_while_building --features=swift.use_global_index_store --features=swift.use_global_module_cache --features=oso_prefix_is_pwd
+INFO: Reading rc options for 'build' from /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/.bazelrc:
+  'build' options: --action_env=ZERO_AR_DATE=1 --apple_platform_type=ios --enable_platform_specific_config --apple_crosstool_top=@local_config_apple_cc//:toolchain --crosstool_top=@local_config_apple_cc//:toolchain --host_crosstool_top=@local_config_apple_cc//:toolchain --per_file_copt=.*.m$,@-fno-objc-msgsend-selector-stubs --per_file_copt=.*.mm$,@-fno-objc-msgsend-selector-stubs --features=debug_prefix_map_pwd_is_dot --features=swift.cacheable_swiftmodules --features=swift.debug_prefix_map --features=swift.enable_vfsoverlays --strategy=Genrule=standalone --spawn_strategy=standalone --strategy=SwiftCompile=worker --//Telegram:disableExtensions
+Computing main repo mapping: 
+Loading: 
+Loading: 1 packages loaded
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+Analyzing: target //Telegram:Telegram (1 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //Telegram:Telegram (3 packages loaded, 4071 targets configured).
+[2,405 / 5,489] Compiling submodules/rlottie/rlottie/src/vector/vpath.cpp; 1s local ... (10 actions, 9 running)
+[2,580 / 5,572] Executing genrule //third-party/libvpx:libvpx_build; 2s local ... (10 actions, 9 running)
+[2,594 / 5,572] Executing genrule //third-party/libvpx:libvpx_build; 3s local ... (10 actions, 9 running)
+[2,624 / 5,584] Executing genrule //third-party/libvpx:libvpx_build; 4s local ... (10 actions running)
+[2,664 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 5s local ... (10 actions running)
+[2,670 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 6s local ... (10 actions running)
+[2,676 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 7s local ... (10 actions running)
+[2,699 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 8s local ... (10 actions running)
+[2,716 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 9s local ... (10 actions running)
+[2,767 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 10s local ... (10 actions running)
+[2,780 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 11s local ... (10 actions running)
+[2,794 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 12s local ... (10 actions running)
+[2,814 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 13s local ... (10 actions, 9 running)
+[2,836 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 14s local ... (10 actions, 9 running)
+[2,844 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 16s local ... (10 actions, 9 running)
+[2,856 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 17s local ... (10 actions, 9 running)
+[2,867 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 18s local ... (10 actions, 9 running)
+[2,878 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 19s local ... (10 actions, 9 running)
+[2,888 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 20s local ... (10 actions, 9 running)
+[2,894 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 21s local ... (10 actions, 9 running)
+[2,901 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 22s local ... (10 actions running)
+[2,915 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 23s local ... (10 actions, 9 running)
+[2,926 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 24s local ... (10 actions running)
+[2,930 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 25s local ... (10 actions running)
+[2,940 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 26s local ... (10 actions running)
+[2,949 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 27s local ... (10 actions running)
+[2,954 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 28s local ... (10 actions running)
+[2,971 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 29s local ... (10 actions running)
+[2,981 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 30s local ... (10 actions, 9 running)
+[2,993 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 31s local ... (10 actions running)
+[3,004 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 32s local ... (10 actions running)
+[3,015 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 33s local ... (10 actions running)
+[3,030 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 34s local ... (10 actions running)
+[3,041 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 35s local ... (10 actions, 9 running)
+[3,050 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 36s local ... (10 actions running)
+[3,061 / 5,608] Executing genrule //third-party/libvpx:libvpx_build; 37s local ... (10 actions running)
+ERROR: /Volumes/dx/dev/_home/MTProxy/Telegram-iOS/submodules/LegacyComponents/BUILD:17:13: Compiling submodules/LegacyComponents/Sources/TGImageBlur.m failed: (Exit 1): wrapped_clang failed: error executing ObjcCompile command (from target //submodules/LegacyComponents:LegacyComponents) 
+  (cd /private/var/tmp/_bazel_afanasyev/9a39311ceb7a61706aa1e4e247e12702/execroot/_main && \
+  exec env - \
+    APPLE_SDK_PLATFORM=iPhoneOS \
+    APPLE_SDK_VERSION_OVERRIDE=26.4 \
+    PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+    XCODE_VERSION_OVERRIDE=26.4.0.17E5179g \
+    ZERO_AR_DATE=1 \
+  bazel-out/darwin_arm64-opt-exec-ST-d57f47055a04/bin/external/apple_support+/crosstool/wrapped_clang '-D_FORTIFY_SOURCE=1' -fstack-protector -fcolor-diagnostics -Wall -Wthread-safety -Wself-assign -fno-omit-frame-pointer -g '-fdebug-prefix-map=__BAZEL_EXECUTION_ROOT__=.' '-fdebug-prefix-map=__BAZEL_XCODE_DEVELOPER_DIR__=/PLACEHOLDER_DEVELOPER_DIR' '-Werror=incompatible-sysroot' -Wshorten-64-to-32 -Wbool-conversion -Wconstant-conversion -Wduplicate-method-match -Wempty-body -Wenum-conversion -Wint-conversion -Wunreachable-code -Wmismatched-return-types -Wundeclared-selector -Wuninitialized -Wunused-function -Wunused-variable -iquote . -iquote bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin -Isubmodules/LegacyComponents/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/PublicHeaders -Isubmodules/SSignalKit/SSignalKit/Source -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/SSignalKit/SSignalKit/Source -Isubmodules/AppBundle/PublicHeaders -Ibazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/AppBundle/PublicHeaders -MD -MF bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGImageBlur.d -DOS_IOS -fno-autolink -isysroot __BAZEL_XCODE_SDKROOT__ -F__BAZEL_XCODE_SDKROOT__/System/Library/Frameworks -F__BAZEL_XCODE_DEVELOPER_DIR__/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -fobjc-arc -no-canonical-prefixes -target arm64-apple-ios13.0 -Werror -fmodules '-fmodules-cache-path=bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/_objc_module_cache' -O0 '-DDEBUG=1' -fstack-protector -fstack-protector-all -g -fno-objc-msgsend-selector-stubs -Wno-builtin-macro-redefined '-D__DATE__="redacted"' '-D__TIMESTAMP__="redacted"' '-D__TIME__="redacted"' -c submodules/LegacyComponents/Sources/TGImageBlur.m -o bazel-out/ios_arm64-dbg-ios-arm64-min13.0-ST-57b073d392e5/bin/submodules/LegacyComponents/_objs/LegacyComponents/arc/TGImageBlur.o)
+# Configuration: 39c5484e21c617c485e617fe1cfe71baa245c32b42d934763603a4f6cda4ca8e
+# Execution platform: @@platforms//host:host
+submodules/LegacyComponents/Sources/TGImageBlur.m:495:71: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+  495 |             CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:537:67: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+  537 |         CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:777:67: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+  777 |         CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1056:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1056 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1183:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1183 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1287:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1287 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1419:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1419 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1549:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1549 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1660:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1660 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1736:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1736 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1818:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1818 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1910:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1910 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:1957:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 1957 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2051:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2051 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2140:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2140 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2176:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2176 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2216:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2216 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2275:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2275 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+submodules/LegacyComponents/Sources/TGImageBlur.m:2323:63: error: bitwise operation between different enumeration types ('enum CGImageAlphaInfo' and 'const CGBitmapInfo' (aka 'const enum CGBitmapInfo')) [-Werror,-Wenum-enum-conversion]
+ 2323 |     CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+Error in child process '/usr/bin/xcrun'. 1
+Target //Telegram:Telegram failed to build
+INFO: Elapsed time: 39.196s, Critical Path: 38.32s
+INFO: 383 processes: 1144 action cache hit, 11 internal, 359 local, 13 worker.
+ERROR: Build did NOT complete successfully
+Overriding the required Xcode version 26.2 with 26.4 as reported by 'xcode-select -p'
+TelegramBuild: running
+/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64 build Telegram/Telegram --announce_rc --features=swift.use_global_module_cache --verbose_failures --remote_cache_async --define=buildNumber=1 -c dbg --ios_multi_cpus=arm64 --watchos_cpus=arm64_32 --@build_bazel_rules_swift//swift:copt=\"-j\" --@build_bazel_rules_swift//swift:copt=\"8\"
+Traceback (most recent call last):
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 1240, in <module>
+    build(bazel=bazel_path, arguments=args)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 621, in build
+    bazel_command_line.invoke_build()
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/Make.py", line 300, in invoke_build
+    call_executable(combined_arguments)
+  File "/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-system/Make/BuildEnvironment.py", line 104, in call_executable
+    subprocess.check_call(resolved_arguments, env=resolved_env)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 373, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/Volumes/dx/dev/_home/MTProxy/Telegram-iOS/build-input/bazel-8.4.2-darwin-arm64', 'build', 'Telegram/Telegram', '--announce_rc', '--features=swift.use_global_module_cache', '--verbose_failures', '--remote_cache_async', '--define=buildNumber=1', '-c', 'dbg', '--ios_multi_cpus=arm64', '--watchos_cpus=arm64_32', '--@build_bazel_rules_swift//swift:copt="-j"', '--@build_bazel_rules_swift//swift:copt="8"']' returned non-zero exit status 1.
