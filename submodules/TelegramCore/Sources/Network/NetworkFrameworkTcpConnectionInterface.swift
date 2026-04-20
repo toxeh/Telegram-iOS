@@ -342,6 +342,14 @@ final class NetworkFrameworkTcpConnectionInterface: NSObject, MTTcpConnectionInt
         }
     }
     
+    func readData(to data: Data, withTimeout timeout: TimeInterval, tag: Int) {
+        // Not implemented
+    }
+    
+    func startTLS(_ tlsSettings: [AnyHashable : Any]?) {
+        // Not implemented
+    }
+    
     func disconnect() {
         self.impl.with { impl in
             impl.disconnect()

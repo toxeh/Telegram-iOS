@@ -33,6 +33,15 @@ public enum ProxyServerConnection: Equatable, Hashable, Codable {
     }
 }
 
+extension ProxyServerConnection {
+    public var isMtProxy3: Bool {
+        if case let .mtp(secret) = self, !secret.isEmpty, secret[0] == 0xff {
+            return true
+        }
+        return false
+    }
+}
+
 public struct ProxyServerSettings: Codable, Equatable, Hashable {
     public let host: String
     public let port: Int32

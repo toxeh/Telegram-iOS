@@ -23,6 +23,7 @@
 - (void)connectionInterfaceDidReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag;
 - (void)connectionInterfaceDidReadData:(NSData * _Nonnull)rawData withTag:(long)tag networkType:(int32_t)networkType;
 - (void)connectionInterfaceDidConnect;
+- (void)connectionInterfaceDidSecure;
 - (void)connectionInterfaceDidDisconnectWithError:(NSError * _Nullable)error;
 
 @end
@@ -36,8 +37,10 @@
          viaInterface:(NSString * _Nullable)inInterface
           withTimeout:(NSTimeInterval)timeout
                 error:(NSError * _Nullable * _Nullable)errPtr;
+- (void)startTLS:(NSDictionary * _Nullable)tlsSettings;
 - (void)writeData:(NSData * _Nonnull)data;
 - (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout tag:(long)tag;
+- (void)readDataToData:(NSData * _Nonnull)data withTimeout:(NSTimeInterval)timeout tag:(long)tag;
 - (void)disconnect;
 - (void)resetDelegate;
 

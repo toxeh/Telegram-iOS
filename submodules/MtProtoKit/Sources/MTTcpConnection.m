@@ -607,7 +607,12 @@ typedef enum {
     MTTcpSocksReceivePassthrough,
     MTTcpSocksReceiveComplexLength,
     MTTcpSocksReceiveComplexPacketPart,
-    MTTcpSocksReceiveComplexDummyPayload
+    MTTcpSocksReceiveComplexDummyPayload,
+    MTTcpSocksReceiveWebSocketHandshake,
+    MTTcpSocksReceiveWSHeader,
+    MTTcpSocksReceiveWSExtendedLength16,
+    MTTcpSocksReceiveWSExtendedLength64,
+    MTTcpSocksReceiveWSPayload
 } MTTcpReadTags;
 
 static const NSTimeInterval MTMinTcpResponseTimeout = 12.0;
@@ -677,12 +682,20 @@ struct ctr_state {
     return [_socket connectToHost:inHost onPort:port viaInterface:inInterface withTimeout:timeout error:errPtr];
 }
 
+- (void)startTLS:(NSDictionary *)tlsSettings {
+    [_socket startTLS:tlsSettings];
+}
+
 - (void)writeData:(NSData *)data {
     [_socket writeData:data withTimeout:-1.0 tag:0];
 }
 
 - (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout tag:(long)tag {
     [_socket readDataToLength:length withTimeout:timeout tag:tag];
+}
+
+- (void)readDataToData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag {
+    [_socket readDataToData:data withTimeout:timeout tag:tag];
 }
 
 - (void)disconnect {
@@ -712,6 +725,15 @@ struct ctr_state {
     id<MTTcpConnectionInterfaceDelegate> delegate = _delegate;
     if (delegate) {
         [delegate connectionInterfaceDidConnect];
+    }
+}
+
+- (void)socketDidSecure:(GCDAsyncSocket *)sock {
+    id<MTTcpConnectionInterfaceDelegate> delegate = _delegate;
+    if (delegate) {
+        if ([delegate respondsToSelector:@selector(connectionInterfaceDidSecure)]) {
+            [delegate connectionInterfaceDidSecure];
+        }
     }
 }
 
@@ -797,6 +819,7 @@ struct ctr_state {
     NSMutableArray<MTTcpSendData *> *_pendingDataQueue;
     NSMutableData *_receivedDataBuffer;
     MTTcpReceiveData *_pendingReceiveData;
+    uint64_t _wsCurrentFrameLength;
 }
 
 @property (nonatomic) int64_t packetHeadDecodeToken;
@@ -865,7 +888,7 @@ struct ctr_state {
         }
         
         if (_mtpSecret != nil) {
-            if ([_mtpSecret isKindOfClass:[MTProxySecretType1 class]] || [_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
+            if ([_mtpSecret isKindOfClass:[MTProxySecretType1 class]] || [_mtpSecret isKindOfClass:[MTProxySecretType2 class]] || [_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
                 _useIntermediateFormat = true;
             }
         }
@@ -1047,6 +1070,15 @@ struct ctr_state {
 
                             [strongSelf->_socket writeData:helloData];
                             [strongSelf->_socket readDataToLength:5 withTimeout:-1 tag:MTTcpSocksReceiveHelloResponse];
+                        } else if (strongSelf->_mtpIp != nil && [strongSelf->_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
+                            // Type3 (WebSocket tunnel): do nothing here.
+                            // The flow is: connectToHost → connectionInterfaceDidConnect → startTLS
+                            //            → connectionInterfaceDidSecure → HTTP Upgrade → WS handshake
+                            //            → readyToSendData = true
+                            // All of that happens via delegate callbacks, not here.
+                            if (MTLogEnabled()) {
+                                MTLog(@"[MTTcpConnection#%" PRIxPTR " Type3 WebSocket mode: waiting for TLS+WS handshake]", (intptr_t)strongSelf);
+                            }
                         } else {
                             strongSelf->_readyToSendData = true;
                             [strongSelf sendDataIfNeeded];
@@ -1303,6 +1335,41 @@ struct ctr_state {
                             offset += partLength;
                         }
                         [_socket writeData:partitionedCompleteData];
+                    } else if ([_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
+                        NSMutableData *wsData = [[NSMutableData alloc] init];
+                        uint8_t header[10];
+                        int headerLen = 0;
+                        
+                        header[0] = 0x82; // FIN=1, OPCODE=2 (Binary)
+                        uint64_t payloadLen = (uint64_t)completeData.length;
+                        
+                        if (payloadLen < 126) {
+                            header[1] = 0x80 | (uint8_t)payloadLen; // Mask=1
+                            headerLen = 2;
+                        } else if (payloadLen <= 0xFFFF) {
+                            header[1] = 0x80 | 126;
+                            header[2] = (payloadLen >> 8) & 0xFF;
+                            header[3] = payloadLen & 0xFF;
+                            headerLen = 4;
+                        } else {
+                            header[1] = 0x80 | 127;
+                            for(int i=0; i<8; i++) header[2+i] = (payloadLen >> (56 - 8*i)) & 0xFF;
+                            headerLen = 10;
+                        }
+                        [wsData appendBytes:header length:headerLen];
+                        
+                        uint8_t maskKey[4];
+                        arc4random_buf(maskKey, 4);
+                        [wsData appendBytes:maskKey length:4];
+                        
+                        NSMutableData *maskedPayload = [completeData mutableCopy];
+                        uint8_t *payloadPtr = (uint8_t *)maskedPayload.mutableBytes;
+                        for (NSUInteger i = 0; i < payloadLen; i++) {
+                            payloadPtr[i] ^= maskKey[i % 4];
+                        }
+                        
+                        [wsData appendData:maskedPayload];
+                        [_socket writeData:wsData];
                     } else {
                         [_socket writeData:completeData];
                     }
@@ -1436,6 +1503,100 @@ struct ctr_state {
 
 - (void)connectionInterfaceDidReadData:(NSData *)rawData withTag:(long)tag networkType:(int32_t)networkType
 {
+    if (tag == MTTcpSocksReceiveWebSocketHandshake) {
+        // Validate the HTTP 101 Switching Protocols response
+        NSString *responseStr = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
+        if (responseStr == nil || ![responseStr containsString:@"101"]) {
+            if (MTLogEnabled()) {
+                MTLog(@"[MTTcpConnection#%" PRIxPTR " WebSocket upgrade failed: %@]", (intptr_t)self, responseStr ?: @"(nil)");
+            }
+            [self closeAndNotifyWithError:true];
+            return;
+        }
+        
+        if (MTLogEnabled()) {
+            MTLog(@"[MTTcpConnection#%" PRIxPTR " WebSocket upgrade succeeded, tunnel active]", (intptr_t)self);
+        }
+        
+        // Now the tunnel is established — notify delegates
+        if (_connectionOpened)
+            _connectionOpened();
+        id<MTTcpConnectionDelegate> delegate = _delegate;
+        if ([delegate respondsToSelector:@selector(tcpConnectionOpened:)])
+            [delegate tcpConnectionOpened:self];
+        
+        // Mark ready to send data — the full handshake chain is:
+        // TCP connect → TLS → HTTP Upgrade 101 → HERE
+        _readyToSendData = true;
+        [self sendDataIfNeeded];
+            
+        // Start WebSocket frame read loop (server→client)
+        [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
+        
+        // Start MTProto packet read loop (reads from _receivedDataBuffer fed by WS frames)
+        if (_useIntermediateFormat) {
+            [self requestReadDataWithLength:4 tag:MTTcpReadTagPacketFullLength];
+        } else {
+            [self requestReadDataWithLength:1 tag:MTTcpReadTagPacketShortLength];
+        }
+        return;
+    }
+
+    if (tag == MTTcpSocksReceiveWSHeader) {
+        if (rawData.length != 2) {
+            [self closeAndNotifyWithError:true];
+            return;
+        }
+        uint8_t payloadLen = ((uint8_t *)rawData.bytes)[1] & 0x7F;
+        if (payloadLen == 126) {
+            [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSExtendedLength16];
+        } else if (payloadLen == 127) {
+            [_socket readDataToLength:8 withTimeout:-1 tag:MTTcpSocksReceiveWSExtendedLength64];
+        } else {
+            _wsCurrentFrameLength = payloadLen;
+            if (_wsCurrentFrameLength > 0) {
+                [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+            } else {
+                [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
+            }
+        }
+        return;
+    }
+    
+    if (tag == MTTcpSocksReceiveWSExtendedLength16) {
+        if (rawData.length != 2) {
+            [self closeAndNotifyWithError:true];
+            return;
+        }
+        uint16_t len = 0;
+        [rawData getBytes:&len length:2];
+        _wsCurrentFrameLength = OSSwapInt16(len);
+        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+        return;
+    }
+    
+    if (tag == MTTcpSocksReceiveWSExtendedLength64) {
+        if (rawData.length != 8) {
+            [self closeAndNotifyWithError:true];
+            return;
+        }
+        uint64_t len = 0;
+        [rawData getBytes:&len length:8];
+        _wsCurrentFrameLength = OSSwapInt64(len);
+        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+        return;
+    }
+    
+    if (tag == MTTcpSocksReceiveWSPayload) {
+        [self addReadData:rawData networkType:networkType];
+        [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
+        return;
+    }
+
+    if (tag == MTTcpSocksReceivePassthrough) {
+        return;
+    }
+    
     if (_closed)
         return;
     
@@ -1754,7 +1915,7 @@ struct ctr_state {
     assert(length > 0);
     assert(_pendingReceiveData == nil);
     _pendingReceiveData = [[MTTcpReceiveData alloc] initWithTag:tag length:length];
-    if (![_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
+    if (![_mtpSecret isKindOfClass:[MTProxySecretType2 class]] && ![_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
         [_socket readDataToLength:length withTimeout:-1 tag:MTTcpSocksReceivePassthrough];
     }
     if (_receivedDataBuffer.length >= _pendingReceiveData.length) {
@@ -1994,11 +2155,59 @@ struct ctr_state {
     if (_socksIp != nil) {
         
     } else {
+        if ([_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
+            // Type3 (WebSocket tunnel): initiate genuine TLS handshake with nginx.
+            // We set the peer name (SNI) to the domain from the secret so nginx
+            // can serve the correct certificate.
+            MTProxySecretType3 *secret = (MTProxySecretType3 *)_mtpSecret;
+            NSDictionary *tlsSettings = @{
+                (__bridge NSString *)kCFStreamSSLPeerName: secret.domain,
+                // Allow default trust evaluation — nginx has a real Let's Encrypt cert  
+            };
+            if (MTLogEnabled()) {
+                MTLog(@"[MTTcpConnection#%" PRIxPTR " Type3: starting genuine TLS to %@]", (intptr_t)self, secret.domain);
+            }
+            [_socket startTLS:tlsSettings];
+            return;
+        }
+
         if (_connectionOpened)
             _connectionOpened();
         id<MTTcpConnectionDelegate> delegate = _delegate;
         if ([delegate respondsToSelector:@selector(tcpConnectionOpened:)])
             [delegate tcpConnectionOpened:self];
+    }
+}
+
+- (void)connectionInterfaceDidSecure
+{
+    if ([_mtpSecret isKindOfClass:[MTProxySecretType3 class]]) {
+        MTProxySecretType3 *secret = (MTProxySecretType3 *)_mtpSecret;
+        
+        // Generate a random Sec-WebSocket-Key (16 bytes → base64)
+        uint8_t nonceBytes[16];
+        (void)SecRandomCopyBytes(kSecRandomDefault, 16, nonceBytes);
+        NSData *nonceData = [NSData dataWithBytes:nonceBytes length:16];
+        NSString *wsKey = [nonceData base64EncodedStringWithOptions:0];
+        
+        NSString *upgrade = [NSString stringWithFormat:
+            @"GET /v1/api/mtpr HTTP/1.1\r\n"
+            @"Host: %@\r\n"
+            @"Upgrade: websocket\r\n"
+            @"Connection: Upgrade\r\n"
+            @"Sec-WebSocket-Key: %@\r\n"
+            @"Sec-WebSocket-Version: 13\r\n"
+            @"\r\n", secret.domain, wsKey];
+        
+        if (MTLogEnabled()) {
+            MTLog(@"[MTTcpConnection#%" PRIxPTR " Type3: TLS secured, sending WS upgrade to %@]", (intptr_t)self, secret.domain);
+        }
+        
+        [_socket writeData:[upgrade dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        // Read until \r\n\r\n (end of HTTP response headers)
+        NSData *term = [@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding];
+        [_socket readDataToData:term withTimeout:30.0 tag:MTTcpSocksReceiveWebSocketHandshake];
     }
 }
 
