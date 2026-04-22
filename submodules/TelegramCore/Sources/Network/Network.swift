@@ -519,7 +519,8 @@ func initializedNetwork(accountId: AccountRecordId, arguments: NetworkInitializa
                 
                 if useNetworkFramework {
                     let secret = apiEnvironment.socksProxySettings?.secret
-                    let isType3 = secret != nil && !secret!.isEmpty && secret!.first == 0xff
+                    let hasWsPath = apiEnvironment.socksProxySettings?.wsPath != nil && !(apiEnvironment.socksProxySettings?.wsPath?.isEmpty ?? true)
+                    let isType3 = hasWsPath || (secret != nil && !secret!.isEmpty && secret!.first == 0xff)
                     
                     if !isType3 {
                         if #available(iOS 12.0, macOS 14.0, *) {

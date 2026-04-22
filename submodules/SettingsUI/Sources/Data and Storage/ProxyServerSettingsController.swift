@@ -19,6 +19,11 @@ private func shareLink(for server: ProxyServerSettings) -> String {
         let secret = MTProxySecret.parseData(secret)?.serializeToString() ?? ""
         link = "https://t.me/proxy?server=\(server.host)&port=\(server.port)"
         link += "&secret=\(secret.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
+    case let .mtp3(secret, wsPath):
+        let secret = MTProxySecret.parseData(secret)?.serializeToString() ?? ""
+        link = "https://t.me/proxy?server=\(server.host)&port=\(server.port)"
+        link += "&secret=\(secret.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
+        link += "&wsPath=\(wsPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
     case let .socks5(username, password):
         link = "https://t.me/socks?server=\(server.host)&port=\(server.port)"
         link += "&user=\(username?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")&pass=\(password?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
@@ -52,27 +57,29 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
     
     case modeSocks5(PresentationTheme, String, Bool)
     case modeMtp(PresentationTheme, String, Bool)
-    
+    case modeMtp3(PresentationTheme, String, Bool)
+
     case connectionHeader(PresentationTheme, String)
     case connectionServer(PresentationTheme, PresentationStrings, String, String)
     case connectionPort(PresentationTheme, PresentationStrings, String, String)
-    
+
     case credentialsHeader(PresentationTheme, String)
     case credentialsUsername(PresentationTheme, PresentationStrings, String, String)
     case credentialsPassword(PresentationTheme, PresentationStrings, String, String)
     case credentialsSecret(PresentationTheme, PresentationStrings, String, String)
-    
+    case credentialsWsPath(PresentationTheme, PresentationStrings, String, String)
+
     case share(PresentationTheme, String, Bool)
     
     var section: ItemListSectionId {
         switch self {
             case .usePasteboardSettings, .usePasteboardInfo:
                 return ProxySettingsSection.pasteboard.rawValue
-            case .modeSocks5, .modeMtp:
+            case .modeSocks5, .modeMtp, .modeMtp3:
                 return ProxySettingsSection.mode.rawValue
             case .connectionHeader, .connectionServer, .connectionPort:
                 return ProxySettingsSection.connection.rawValue
-            case .credentialsHeader, .credentialsUsername, .credentialsPassword, .credentialsSecret:
+            case .credentialsHeader, .credentialsUsername, .credentialsPassword, .credentialsSecret, .credentialsWsPath:
                 return ProxySettingsSection.credentials.rawValue
             case .share:
                 return ProxySettingsSection.share.rawValue
@@ -89,22 +96,26 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                 return 2
             case .modeMtp:
                 return 3
-            case .connectionHeader:
+            case .modeMtp3:
                 return 4
-            case .connectionServer:
+            case .connectionHeader:
                 return 5
-            case .connectionPort:
+            case .connectionServer:
                 return 6
-            case .credentialsHeader:
+            case .connectionPort:
                 return 7
-            case .credentialsUsername:
+            case .credentialsHeader:
                 return 8
-            case .credentialsPassword:
+            case .credentialsUsername:
                 return 9
-            case .credentialsSecret:
+            case .credentialsPassword:
                 return 10
-            case .share:
+            case .credentialsSecret:
+                return 11
+            case .credentialsWsPath:
                 return 12
+            case .share:
+                return 13
         }
     }
     
@@ -134,6 +145,14 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                     arguments.updateState { state in
                         var state = state
                         state.mode = .mtp
+                        return state
+                    }
+                })
+            case let .modeMtp3(_, text, value):
+                return ItemListCheckboxItem(presentationData: presentationData, systemStyle: .glass, title: text, style: .left, checked: value, zeroSeparatorInsets: false, sectionId: self.section, action: {
+                    arguments.updateState { state in
+                        var state = state
+                        state.mode = .mtp3
                         return state
                     }
                 })
@@ -181,6 +200,14 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                         return state
                     }
                 }, action: {})
+            case let .credentialsWsPath(_, _, placeholder, text):
+                return ItemListSingleLineInputItem(presentationData: presentationData, systemStyle: .glass, title: NSAttributedString(), text: text, placeholder: placeholder, type: .regular(capitalization: false, autocorrection: false), sectionId: self.section, textUpdated: { value in
+                    arguments.updateState { current in
+                        var state = current
+                        state.wsPath = value
+                        return state
+                    }
+                }, action: {})
             case let .share(_, text, enabled):
                 return ItemListActionItem(presentationData: presentationData, systemStyle: .glass, title: text, kind: enabled ? .generic : .disabled, alignment: .natural, sectionId: self.section, style: .blocks, action: {
                     arguments.share()
@@ -192,6 +219,7 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
 private enum ProxyServerSettingsControllerMode {
     case socks5
     case mtp
+    case mtp3
 }
 
 private struct ProxyServerSettingsControllerState: Equatable {
@@ -201,7 +229,8 @@ private struct ProxyServerSettingsControllerState: Equatable {
     var username: String
     var password: String
     var secret: String
-    
+    var wsPath: String
+
     var isComplete: Bool {
         if self.host.isEmpty || self.port.isEmpty || Int(self.port) == nil {
             return false
@@ -210,8 +239,14 @@ private struct ProxyServerSettingsControllerState: Equatable {
             case .socks5:
                 break
             case .mtp:
-                let secretIsValid = MTProxySecret.parse(self.secret) != nil
-                if !secretIsValid {
+                if MTProxySecret.parse(self.secret) == nil {
+                    return false
+                }
+            case .mtp3:
+                if MTProxySecret.parse(self.secret) == nil {
+                    return false
+                }
+                if self.wsPath.isEmpty {
                     return false
                 }
         }
@@ -228,11 +263,12 @@ private func proxyServerSettingsControllerEntries(presentationData: Presentation
     
     entries.append(.modeSocks5(presentationData.theme, presentationData.strings.SocksProxySetup_ProxySocks5, state.mode == .socks5))
     entries.append(.modeMtp(presentationData.theme, presentationData.strings.SocksProxySetup_ProxyTelegram, state.mode == .mtp))
-    
+    entries.append(.modeMtp3(presentationData.theme, "MTProxy3 (WebSocket)", state.mode == .mtp3))
+
     entries.append(.connectionHeader(presentationData.theme, presentationData.strings.SocksProxySetup_Connection.uppercased()))
     entries.append(.connectionServer(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_Hostname, state.host))
     entries.append(.connectionPort(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_Port, state.port))
-    
+
     switch state.mode {
         case .socks5:
             entries.append(.credentialsHeader(presentationData.theme, presentationData.strings.SocksProxySetup_Credentials))
@@ -241,6 +277,10 @@ private func proxyServerSettingsControllerEntries(presentationData: Presentation
         case .mtp:
             entries.append(.credentialsHeader(presentationData.theme, presentationData.strings.SocksProxySetup_RequiredCredentials))
             entries.append(.credentialsSecret(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_SecretPlaceholder, state.secret))
+        case .mtp3:
+            entries.append(.credentialsHeader(presentationData.theme, presentationData.strings.SocksProxySetup_RequiredCredentials))
+            entries.append(.credentialsSecret(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_SecretPlaceholder, state.secret))
+            entries.append(.credentialsWsPath(presentationData.theme, presentationData.strings, "WebSocket Path (e.g. /v1/api/mtpr)", state.wsPath))
     }
     
     entries.append(.share(presentationData.theme, presentationData.strings.Conversation_ContextMenuShare, state.isComplete))
@@ -254,9 +294,12 @@ private func proxyServerSettings(with state: ProxyServerSettingsControllerState)
             case .socks5:
                 return ProxyServerSettings(host: state.host, port: port, connection: .socks5(username: state.username.isEmpty ? nil : state.username, password: state.password.isEmpty ? nil : state.password))
             case .mtp:
-                let parsedSecret = MTProxySecret.parse(state.secret)
-                if let parsedSecret = parsedSecret {
+                if let parsedSecret = MTProxySecret.parse(state.secret) {
                     return ProxyServerSettings(host: state.host, port: port, connection: .mtp(secret: parsedSecret.serialize()))
+                }
+            case .mtp3:
+                if let parsedSecret = MTProxySecret.parse(state.secret) {
+                    return ProxyServerSettings(host: state.host, port: port, connection: .mtp3(secret: parsedSecret.serialize(), wsPath: state.wsPath))
                 }
         }
     }
@@ -273,6 +316,7 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
     var currentUsername: String?
     var currentPassword: String?
     var currentSecret: String?
+    var currentWsPath: String = ""
     var pasteboardSettings: ProxyServerSettings?
     if let currentSettings = currentSettings {
         switch currentSettings.connection {
@@ -283,6 +327,10 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
             case let .mtp(secret):
                 currentSecret = hexString(secret)
                 currentMode = .mtp
+            case let .mtp3(secret, wsPath):
+                currentSecret = hexString(secret)
+                currentWsPath = wsPath
+                currentMode = .mtp3
         }
     } else {
         if let proxy = parseProxyUrl(sharedContext: sharedContext, url: UIPasteboard.general.string ?? "") {
@@ -294,7 +342,7 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
         }
     }
 
-    let initialState = ProxyServerSettingsControllerState(mode: currentMode, host: currentSettings?.host ?? "", port: (currentSettings?.port).flatMap { "\($0)" } ?? "", username: currentUsername ?? "", password: currentPassword ?? "", secret: currentSecret ?? "")
+    let initialState = ProxyServerSettingsControllerState(mode: currentMode, host: currentSettings?.host ?? "", port: (currentSettings?.port).flatMap { "\($0)" } ?? "", username: currentUsername ?? "", password: currentPassword ?? "", secret: currentSecret ?? "", wsPath: currentWsPath)
     let stateValue = Atomic(value: initialState)
     let statePromise = ValuePromise(initialState, ignoreRepeated: true)
     let updateState: ((ProxyServerSettingsControllerState) -> ProxyServerSettingsControllerState) -> Void = { f in
@@ -324,6 +372,10 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
                     case let .mtp(secret):
                         state.mode = .mtp
                         state.secret = hexString(secret)
+                    case let .mtp3(secret, wsPath):
+                        state.mode = .mtp3
+                        state.secret = hexString(secret)
+                        state.wsPath = wsPath
                 }
                 return state
             }

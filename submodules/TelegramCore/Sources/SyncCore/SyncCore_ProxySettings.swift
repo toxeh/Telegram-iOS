@@ -4,7 +4,8 @@ import Postbox
 public enum ProxyServerConnection: Equatable, Hashable, Codable {
     case socks5(username: String?, password: String?)
     case mtp(secret: Data)
-    
+    case mtp3(secret: Data, wsPath: String)
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: StringCodingKey.self)
 
@@ -13,11 +14,13 @@ public enum ProxyServerConnection: Equatable, Hashable, Codable {
                 self = .socks5(username: try container.decodeIfPresent(String.self, forKey: "username"), password: try container.decodeIfPresent(String.self, forKey: "password"))
             case 1:
                 self = .mtp(secret: try container.decode(Data.self, forKey: "secret"))
+            case 2:
+                self = .mtp3(secret: try container.decode(Data.self, forKey: "secret"), wsPath: (try? container.decode(String.self, forKey: "wsPath")) ?? "/v1/api/mtpr")
             default:
                 self = .socks5(username: nil, password: nil)
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: StringCodingKey.self)
 
@@ -29,12 +32,19 @@ public enum ProxyServerConnection: Equatable, Hashable, Codable {
             case let .mtp(secret):
                 try container.encode(1 as Int32, forKey: "_t")
                 try container.encode(secret, forKey: "secret")
+            case let .mtp3(secret, wsPath):
+                try container.encode(2 as Int32, forKey: "_t")
+                try container.encode(secret, forKey: "secret")
+                try container.encode(wsPath, forKey: "wsPath")
         }
     }
 }
 
 extension ProxyServerConnection {
     public var isMtProxy3: Bool {
+        if case .mtp3 = self {
+            return true
+        }
         if case let .mtp(secret) = self, !secret.isEmpty, secret[0] == 0xff {
             return true
         }

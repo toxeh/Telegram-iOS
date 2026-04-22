@@ -810,6 +810,7 @@ struct ctr_state {
     NSString *_mtpIp;
     int32_t _mtpPort;
     MTProxySecret *_mtpSecret;
+    NSString *_wsPath;
     NSData *_helloRandom;
     NSData *_currentHelloResponse;
     
@@ -879,6 +880,7 @@ struct ctr_state {
                 _mtpIp = context.apiEnvironment.socksProxySettings.ip;
                 _mtpPort = context.apiEnvironment.socksProxySettings.port;
                 _mtpSecret = [MTProxySecret parseData:context.apiEnvironment.socksProxySettings.secret];
+                _wsPath = context.apiEnvironment.socksProxySettings.wsPath;
             } else {
                 _socksIp = context.apiEnvironment.socksProxySettings.ip;
                 _socksPort = context.apiEnvironment.socksProxySettings.port;
@@ -2190,14 +2192,15 @@ struct ctr_state {
         NSData *nonceData = [NSData dataWithBytes:nonceBytes length:16];
         NSString *wsKey = [nonceData base64EncodedStringWithOptions:0];
         
+        NSString *path = (_wsPath.length > 0) ? _wsPath : @"/v1/api/mtpr";
         NSString *upgrade = [NSString stringWithFormat:
-            @"GET /v1/api/mtpr HTTP/1.1\r\n"
+            @"GET %@ HTTP/1.1\r\n"
             @"Host: %@\r\n"
             @"Upgrade: websocket\r\n"
             @"Connection: Upgrade\r\n"
             @"Sec-WebSocket-Key: %@\r\n"
             @"Sec-WebSocket-Version: 13\r\n"
-            @"\r\n", secret.domain, wsKey];
+            @"\r\n", path, secret.domain, wsKey];
         
         if (MTLogEnabled()) {
             MTLog(@"[MTTcpConnection#%" PRIxPTR " Type3: TLS secured, sending WS upgrade to %@]", (intptr_t)self, secret.domain);

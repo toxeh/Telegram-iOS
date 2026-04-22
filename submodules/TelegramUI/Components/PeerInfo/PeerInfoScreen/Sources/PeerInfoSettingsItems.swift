@@ -159,6 +159,8 @@ func settingsItems(data: PeerInfoScreenData?, context: AccountContext, presentat
                 switch activeServer.connection {
                 case .mtp:
                     proxyType = activeServer.connection.isMtProxy3 ? "mtProxy3" : presentationData.strings.SocksProxySetup_ProxyTelegram
+                case .mtp3:
+                    proxyType = "mtProxy3 (WebSocket)"
                 case .socks5:
                     proxyType = presentationData.strings.SocksProxySetup_ProxySocks5
                 }

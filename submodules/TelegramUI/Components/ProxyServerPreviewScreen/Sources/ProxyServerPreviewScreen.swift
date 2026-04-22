@@ -317,6 +317,14 @@ private final class ProxyServerPreviewSheetContent: CombinedComponent {
                         MultilineTextComponent(text: .plain(NSAttributedString(string: "•••••", font: tableFont, textColor: tableTextColor)))
                     )
                 ))
+            case .mtp3:
+                tableItems.append(.init(
+                    id: "secret",
+                    title: strings.SocksProxySetup_Secret,
+                    component: AnyComponent(
+                        MultilineTextComponent(text: .plain(NSAttributedString(string: "•••••", font: tableFont, textColor: tableTextColor)))
+                    )
+                ))
             }
             
             var statusText = strings.SocksProxySetup_CheckStatus

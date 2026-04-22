@@ -670,6 +670,8 @@ private func dataAndStorageControllerEntries(context: AccountContext, state: Dat
                 proxyValue = presentationData.strings.ChatSettings_ConnectionType_UseSocks5
             case .mtp:
                 proxyValue = activeServer.connection.isMtProxy3 ? "mtProxy3" : presentationData.strings.SocksProxySetup_ProxyTelegram
+            case .mtp3:
+                proxyValue = "mtProxy3 (WebSocket)"
         }
     } else {
         proxyValue = presentationData.strings.GroupInfo_SharedMediaNone

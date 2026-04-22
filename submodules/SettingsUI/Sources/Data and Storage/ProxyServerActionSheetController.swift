@@ -181,6 +181,16 @@ private final class ProxyServerInfoItemNode: ActionSheetItemNode {
                 passwordTextNode.displaysAsynchronously = false
                 passwordTextNode.attributedText = NSAttributedString(string: "•••••", font: textFont, textColor: theme.primaryTextColor)
                 fieldNodes.append((passwordTitleNode, passwordTextNode))
+            case .mtp3:
+                let passwordTitleNode = ImmediateTextNode()
+                passwordTitleNode.isUserInteractionEnabled = false
+                passwordTitleNode.displaysAsynchronously = false
+                passwordTitleNode.attributedText = NSAttributedString(string: strings.SocksProxySetup_Secret, font: textFont, textColor: theme.secondaryTextColor)
+                let passwordTextNode = ImmediateTextNode()
+                passwordTextNode.isUserInteractionEnabled = false
+                passwordTextNode.displaysAsynchronously = false
+                passwordTextNode.attributedText = NSAttributedString(string: "•••••", font: textFont, textColor: theme.primaryTextColor)
+                fieldNodes.append((passwordTitleNode, passwordTextNode))
         }
         
         let statusTitleNode = ImmediateTextNode()

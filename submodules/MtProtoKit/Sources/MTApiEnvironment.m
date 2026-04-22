@@ -359,6 +359,10 @@ static NSData *base64_decode(NSString *str) {
 @implementation MTSocksProxySettings
 
 - (instancetype)initWithIp:(NSString *)ip port:(uint16_t)port username:(NSString *)username password:(NSString *)password secret:(NSData *)secret {
+    return [self initWithIp:ip port:port username:username password:password secret:secret wsPath:nil];
+}
+
+- (instancetype)initWithIp:(NSString *)ip port:(uint16_t)port username:(NSString *)username password:(NSString *)password secret:(NSData *)secret wsPath:(NSString *)wsPath {
     self = [super init];
     if (self != nil) {
         _ip = ip;
@@ -366,6 +370,7 @@ static NSData *base64_decode(NSString *str) {
         _username = username;
         _password = password;
         _secret = secret;
+        _wsPath = wsPath;
     }
     return self;
 }
@@ -388,6 +393,9 @@ static NSData *base64_decode(NSString *str) {
         return false;
     }
     if ((other->_secret != nil) != (_secret != nil) || (_secret != nil && ![_secret isEqual:other->_secret])) {
+        return false;
+    }
+    if ((other->_wsPath != nil) != (_wsPath != nil) || (_wsPath != nil && ![_wsPath isEqual:other->_wsPath])) {
         return false;
     }
     return true;

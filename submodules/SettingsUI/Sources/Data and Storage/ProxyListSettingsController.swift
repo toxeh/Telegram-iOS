@@ -282,6 +282,8 @@ private func proxySettingsControllerEntries(theme: PresentationTheme, strings: P
             switch server.connection {
                 case .socks5:
                     text = strings.ChatSettings_ConnectionType_UseSocks5
+                case .mtp3:
+                    text = "mtProxy3 (WebSocket)"
                 case .mtp:
                     text = server.connection.isMtProxy3 ? "mtProxy3" : strings.SocksProxySetup_ProxyTelegram
             }
@@ -539,6 +541,11 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
                         let secret = MTProxySecret.parseData(secret)?.serializeToString() ?? ""
                         string = "https://t.me/proxy?server=\(server.host)&port=\(server.port)"
                         string += "&secret=\((secret as NSString).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
+                    case let .mtp3(secret, wsPath):
+                        let secret = MTProxySecret.parseData(secret)?.serializeToString() ?? ""
+                        string = "https://t.me/proxy?server=\(server.host)&port=\(server.port)"
+                        string += "&secret=\((secret as NSString).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
+                        string += "&wspath=\((wsPath as NSString).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
                     case let .socks5(username, password):
                         string = "https://t.me/socks?server=\(server.host)&port=\(server.port)"
                         if let username = username, let password = password {
