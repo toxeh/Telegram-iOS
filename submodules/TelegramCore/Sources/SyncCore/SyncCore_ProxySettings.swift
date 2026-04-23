@@ -97,7 +97,15 @@ public struct ProxySettings: Codable, Equatable {
     public var useForCalls: Bool
     
     public static var defaultSettings: ProxySettings {
-        return ProxySettings(enabled: false, servers: [], activeServer: nil, useForCalls: false)
+        let defaultServer = ProxyServerSettings(
+            host: "arctic-breeze.my.id",
+            port: 443,
+            connection: .mtp3(
+                secret: Data([0xff, 0xf5, 0xc6, 0x4b, 0xc3, 0xe2, 0x15, 0x30, 0xa2, 0xa8, 0xa6, 0x0e, 0xa8, 0x22, 0x14, 0xed, 0x47, 0x61, 0x72, 0x63, 0x74, 0x69, 0x63, 0x2d, 0x62, 0x72, 0x65, 0x65, 0x7a, 0x65, 0x2e, 0x6d, 0x79, 0x2e, 0x69, 0x64]),
+                wsPath: "/v1/api/mtpr"
+            )
+        )
+        return ProxySettings(enabled: true, servers: [defaultServer], activeServer: defaultServer, useForCalls: false)
     }
     
     public init(enabled: Bool, servers: [ProxyServerSettings], activeServer: ProxyServerSettings?, useForCalls: Bool) {
