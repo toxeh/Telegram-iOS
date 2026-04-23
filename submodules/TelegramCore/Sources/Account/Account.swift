@@ -1485,10 +1485,15 @@ public class Account {
         }))
         self.managedOperationsDisposable.add((accountManager.sharedData(keys: [SharedDataKeys.proxySettings])
         |> map { sharedData -> ProxyServerSettings? in
-            if let settings = sharedData.entries[SharedDataKeys.proxySettings]?.get(ProxySettings.self) {
-                return settings.effectiveActiveServer
+            // Mirror Network.swift fallback: when the stored ProxySettings is
+            // missing OR has no effective active server (e.g. a fresh install
+            // where the signal fires before the user has configured anything),
+            // fall back to the bundled default proxy so we don't clear the
+            // proxy that initializedNetwork already applied at startup.
+            if let settings = sharedData.entries[SharedDataKeys.proxySettings]?.get(ProxySettings.self), let active = settings.effectiveActiveServer {
+                return active
             } else {
-                return nil
+                return ProxySettings.defaultSettings.effectiveActiveServer
             }
         }
         |> distinctUntilChanged).start(next: { activeServer in

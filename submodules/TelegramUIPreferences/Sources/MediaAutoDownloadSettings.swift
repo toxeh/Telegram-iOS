@@ -397,7 +397,7 @@ public struct MediaAutoDownloadSettings: Codable, Equatable {
                 stories: MediaAutoDownloadCategory(contacts: true, otherPrivate: true, groups: true, channels: true, sizeLimit: 20 * mb, predownload: false)
             )
         )
-        return MediaAutoDownloadSettings(presets: presets, cellular: MediaAutoDownloadConnection(enabled: true, preset: .medium, custom: nil), wifi: MediaAutoDownloadConnection(enabled: true, preset: .high, custom: nil), downloadInBackground: true, energyUsageSettings: EnergyUsageSettings.default, highQualityStories: false)
+        return MediaAutoDownloadSettings(presets: presets, cellular: MediaAutoDownloadConnection(enabled: false, preset: .medium, custom: nil), wifi: MediaAutoDownloadConnection(enabled: false, preset: .high, custom: nil), downloadInBackground: true, energyUsageSettings: EnergyUsageSettings.default, highQualityStories: false)
     }
     
     public init(presets: MediaAutoDownloadPresets, cellular: MediaAutoDownloadConnection, wifi: MediaAutoDownloadConnection, downloadInBackground: Bool, energyUsageSettings: EnergyUsageSettings, highQualityStories: Bool) {

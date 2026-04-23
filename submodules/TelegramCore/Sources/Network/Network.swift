@@ -479,7 +479,17 @@ func initializedNetwork(accountId: AccountRecordId, arguments: NetworkInitializa
             apiEnvironment.disableUpdates = supplementary
             apiEnvironment = apiEnvironment.withUpdatedLangPackCode(languageCode ?? "en")
             
-            let effectiveProxySettings = proxySettings ?? ProxySettings.defaultSettings
+            // Fall back to bundled default proxy when there is no usable stored
+            // proxy — covers both "never saved" (nil) and "saved but disabled / no
+            // activeServer" cases. Without this, once postbox stores an empty
+            // ProxySettings (enabled=false, servers=[]), subsequent network
+            // re-inits skip the proxy entirely and TSPU blocks the traffic.
+            let effectiveProxySettings: ProxySettings
+            if let proxySettings = proxySettings, proxySettings.effectiveActiveServer != nil {
+                effectiveProxySettings = proxySettings
+            } else {
+                effectiveProxySettings = ProxySettings.defaultSettings
+            }
             if let effectiveActiveServer = effectiveProxySettings.effectiveActiveServer {
                 apiEnvironment = apiEnvironment.withUpdatedSocksProxySettings(effectiveActiveServer.mtProxySettings)
             }

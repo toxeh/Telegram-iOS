@@ -33,7 +33,7 @@ public struct VoiceCallSettings: Codable, Equatable {
     public var enableSystemIntegration: Bool
     
     public static var defaultSettings: VoiceCallSettings {
-        return VoiceCallSettings(dataSaving: .default, enableSystemIntegration: true)
+        return VoiceCallSettings(dataSaving: .always, enableSystemIntegration: true)
     }
     
     public init(dataSaving: VoiceCallDataSaving, enableSystemIntegration: Bool) {

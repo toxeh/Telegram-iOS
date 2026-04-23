@@ -612,7 +612,8 @@ typedef enum {
     MTTcpSocksReceiveWSHeader,
     MTTcpSocksReceiveWSExtendedLength16,
     MTTcpSocksReceiveWSExtendedLength64,
-    MTTcpSocksReceiveWSPayload
+    MTTcpSocksReceiveWSPayload,
+    MTTcpSocksReceiveWSControlPayload
 } MTTcpReadTags;
 
 static const NSTimeInterval MTMinTcpResponseTimeout = 12.0;
@@ -821,6 +822,7 @@ struct ctr_state {
     NSMutableData *_receivedDataBuffer;
     MTTcpReceiveData *_pendingReceiveData;
     uint64_t _wsCurrentFrameLength;
+    uint8_t _wsCurrentOpcode;
 }
 
 @property (nonatomic) int64_t packetHeadDecodeToken;
@@ -1549,7 +1551,22 @@ struct ctr_state {
             [self closeAndNotifyWithError:true];
             return;
         }
-        uint8_t payloadLen = ((uint8_t *)rawData.bytes)[1] & 0x7F;
+        uint8_t firstByte = ((uint8_t *)rawData.bytes)[0];
+        uint8_t secondByte = ((uint8_t *)rawData.bytes)[1];
+        _wsCurrentOpcode = firstByte & 0x0F;
+        uint8_t payloadLen = secondByte & 0x7F;
+
+        // CLOSE frame → terminate connection
+        if (_wsCurrentOpcode == 0x8) {
+            if (MTLogEnabled()) {
+                MTLog(@"[MTTcpConnection#%" PRIxPTR " received WS CLOSE frame, closing]", (intptr_t)self);
+            }
+            [self closeAndNotifyWithError:false];
+            return;
+        }
+
+        BOOL isControlFrame = (_wsCurrentOpcode & 0x8) != 0;
+
         if (payloadLen == 126) {
             [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSExtendedLength16];
         } else if (payloadLen == 127) {
@@ -1557,14 +1574,16 @@ struct ctr_state {
         } else {
             _wsCurrentFrameLength = payloadLen;
             if (_wsCurrentFrameLength > 0) {
-                [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+                int nextTag = isControlFrame ? MTTcpSocksReceiveWSControlPayload : MTTcpSocksReceiveWSPayload;
+                [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:nextTag];
             } else {
+                // zero-length frame (e.g. empty PING/PONG): no payload to read, loop back to header
                 [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
             }
         }
         return;
     }
-    
+
     if (tag == MTTcpSocksReceiveWSExtendedLength16) {
         if (rawData.length != 2) {
             [self closeAndNotifyWithError:true];
@@ -1573,10 +1592,12 @@ struct ctr_state {
         uint16_t len = 0;
         [rawData getBytes:&len length:2];
         _wsCurrentFrameLength = OSSwapInt16(len);
-        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+        BOOL isControlFrame = (_wsCurrentOpcode & 0x8) != 0;
+        int nextTag = isControlFrame ? MTTcpSocksReceiveWSControlPayload : MTTcpSocksReceiveWSPayload;
+        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:nextTag];
         return;
     }
-    
+
     if (tag == MTTcpSocksReceiveWSExtendedLength64) {
         if (rawData.length != 8) {
             [self closeAndNotifyWithError:true];
@@ -1585,12 +1606,26 @@ struct ctr_state {
         uint64_t len = 0;
         [rawData getBytes:&len length:8];
         _wsCurrentFrameLength = OSSwapInt64(len);
-        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:MTTcpSocksReceiveWSPayload];
+        BOOL isControlFrame = (_wsCurrentOpcode & 0x8) != 0;
+        int nextTag = isControlFrame ? MTTcpSocksReceiveWSControlPayload : MTTcpSocksReceiveWSPayload;
+        [_socket readDataToLength:(NSUInteger)_wsCurrentFrameLength withTimeout:-1 tag:nextTag];
         return;
     }
-    
+
     if (tag == MTTcpSocksReceiveWSPayload) {
+        // Data frame (BINARY=0x2, TEXT=0x1, CONTINUATION=0x0) — feed to MTProto parser
         [self addReadData:rawData networkType:networkType];
+        [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
+        return;
+    }
+
+    if (tag == MTTcpSocksReceiveWSControlPayload) {
+        // Control frame payload (PING=0x9, PONG=0xA). CLOSE is handled in the header path.
+        if (_wsCurrentOpcode == 0x9) {
+            // PING → respond with PONG echoing payload, then keep reading
+            [self sendWSPongWithPayload:rawData];
+        }
+        // Otherwise (PONG or other control) just discard the payload bytes.
         [_socket readDataToLength:2 withTimeout:-1 tag:MTTcpSocksReceiveWSHeader];
         return;
     }
@@ -1930,7 +1965,10 @@ struct ctr_state {
 }
 
 - (void)addReadData:(NSData *)data networkType:(int32_t)networkType {
-    if (_pendingReceiveData != nil && _pendingReceiveData.length == data.length) {
+    // Fast path only when the buffer is empty — otherwise we must consume buffered
+    // bytes first so the AES-CTR stream and MTProto packet boundaries stay aligned
+    // (WS frame boundaries do not need to match MTProto packet boundaries).
+    if (_pendingReceiveData != nil && _pendingReceiveData.length == data.length && _receivedDataBuffer.length == 0) {
         int tag = _pendingReceiveData.tag;
         _pendingReceiveData = nil;
         [self processReceivedData:data tag:tag networkType:networkType];
@@ -1946,6 +1984,40 @@ struct ctr_state {
             }
         }
     }
+}
+
+- (void)sendWSPongWithPayload:(NSData *)payload {
+    NSMutableData *frame = [[NSMutableData alloc] init];
+    uint8_t header[10];
+    int headerLen = 0;
+    header[0] = 0x8A; // FIN=1, OPCODE=0xA (Pong)
+    uint64_t payloadLen = (uint64_t)payload.length;
+    if (payloadLen < 126) {
+        header[1] = 0x80 | (uint8_t)payloadLen; // Mask=1
+        headerLen = 2;
+    } else if (payloadLen <= 0xFFFF) {
+        header[1] = 0x80 | 126;
+        header[2] = (payloadLen >> 8) & 0xFF;
+        header[3] = payloadLen & 0xFF;
+        headerLen = 4;
+    } else {
+        header[1] = 0x80 | 127;
+        for (int i = 0; i < 8; i++) header[2 + i] = (payloadLen >> (56 - 8 * i)) & 0xFF;
+        headerLen = 10;
+    }
+    [frame appendBytes:header length:headerLen];
+    uint8_t maskKey[4];
+    arc4random_buf(maskKey, 4);
+    [frame appendBytes:maskKey length:4];
+    if (payloadLen > 0) {
+        NSMutableData *masked = [payload mutableCopy];
+        uint8_t *p = masked.mutableBytes;
+        for (NSUInteger i = 0; i < payloadLen; i++) {
+            p[i] ^= maskKey[i % 4];
+        }
+        [frame appendData:masked];
+    }
+    [_socket writeData:frame];
 }
 
 - (void)processReceivedData:(NSData *)rawData tag:(int)tag networkType:(int32_t)networkType {
